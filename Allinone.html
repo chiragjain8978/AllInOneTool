@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All-in-One Tools</title>
+    <!-- Include QR Code Library (using CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+    <!-- Include Font Awesome for Icons (using CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* Basic Reset and Global Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            overscroll-behavior-y: contain; /* Prevent pull-to-refresh on mobile */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            border-radius: 0 0 15px 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2em;
+            font-weight: 600;
+        }
+
+        /* Tool Grid Styles */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .tool-category h2 {
+            font-size: 1.4em;
+            color: #555;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tool-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .tool-card i { /* Icon styling */
+            font-size: 2.5em; /* Increased icon size */
+            margin-bottom: 10px;
+            color: #6e8efb; /* Default icon color */
+        }
+
+        /* Assigning specific colors to icons */
+        .tool-card[data-tool="timer"] i { color: #ef5350; }
+        .tool-card[data-tool="dayCounter"] i { color: #42a5f5; }
+        .tool-card[data-tool="calculator"] i { color: #66bb6a; }
+        .tool-card[data-tool="textToSpeech"] i { color: #ff7043; }
+        .tool-card[data-tool="qrGenerator"] i { color: #ab47bc; }
+        .tool-card[data-tool="myLocation"] i { color: #ef5350; }
+        .tool-card[data-tool="colorPicker"] i { color: #ffca28; }
+        .tool-card[data-tool="morseCode"] i { color: #26a69a; }
+        .tool-card[data-tool="deviceInfo"] i { color: #5c6bc0; }
+        .tool-card[data-tool="paint"] i { color: #ec407a; }
+        .tool-card[data-tool="imageTools"] i { color: #78909c; }
+        .tool-card[data-tool="passwordGenerator"] i { color: #bdbdbd; }
+        .tool-card[data-tool="unitConverter"] i { color: #8d6e63; }
+        .tool-card[data-tool="stopwatch"] i { color: #d4e157; }
+        .tool-card[data-tool="notes"] i { color: #ff9800; }
+        .tool-card[data-tool="bmiCalculator"] i { color: #00acc1; }
+        .tool-card[data-tool="coinFlip"] i { color: #ffeb3b; }
+        .tool-card[data-tool="randomNumber"] i { color: #9ccc65; }
+        .tool-card[data-tool="currencyConverter"] i { color: #7e57c2; }
+        .tool-card[data-tool="wordCounter"] i { color: #29b6f6; }
+
+
+        .tool-card h3 {
+            font-size: 0.95em; /* Slightly reduced font size for better fit */
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Tool Interface Styles */
+        .tool-interface {
+            display: none; /* Hidden by default */
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tool-interface h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #4a4a4a;
+            font-weight: 600;
+        }
+
+        .tool-interface label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .tool-interface input[type="text"],
+        .tool-interface input[type="number"],
+        .tool-interface input[type="date"],
+        .tool-interface input[type="color"],
+        .tool-interface textarea,
+        .tool-interface select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.2s ease;
+        }
+         .tool-interface input:focus,
+         .tool-interface textarea:focus,
+         .tool-interface select:focus {
+            outline: none;
+            border-color: #6e8efb;
+            box-shadow: 0 0 0 2px rgba(110, 142, 251, 0.2);
+         }
+
+        .tool-interface button,
+        .back-button {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: background 0.3s ease, transform 0.1s ease;
+            margin-right: 10px; /* Spacing between buttons */
+            margin-bottom: 10px; /* Spacing below buttons */
+        }
+
+        .tool-interface button:hover,
+        .back-button:hover {
+            background: linear-gradient(135deg, #5a7aec, #9d65dd);
+        }
+        .tool-interface button:active,
+        .back-button:active {
+            transform: scale(0.98);
+        }
+
+
+        .back-button {
+            background: #777;
+            display: inline-block; /* Make it sit next to other buttons */
+            margin-top: 20px; /* Add space above back button */
+        }
+         .back-button:hover {
+             background: #666;
+         }
+
+        .tool-output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            min-height: 50px;
+            word-wrap: break-word;
+        }
+
+        /* Specific Tool Styles */
+        #qrCodeOutput img, #qrCodeOutput canvas {
+            display: block;
+            margin: 15px auto;
+            max-width: 200px;
+            height: auto;
+        }
+
+        #paintCanvas {
+            border: 1px solid #ccc;
+            cursor: crosshair;
+            touch-action: none; /* Prevent scrolling while drawing on touch */
+            background-color: #fff; /* Canvas background */
+        }
+
+        .paint-controls {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap; /* Allow controls to wrap on smaller screens */
+        }
+        .paint-controls label {
+            margin-bottom: 0; /* Remove bottom margin for inline labels */
+        }
+        .paint-controls input[type="color"] {
+             width: 50px;
+             height: 40px;
+             padding: 2px;
+             margin-bottom: 0;
+             vertical-align: middle;
+        }
+         .paint-controls input[type="range"] {
+             width: 120px; /* Adjust slider width */
+             vertical-align: middle;
+             cursor: pointer;
+             margin-bottom: 0; /* Remove default margin */
+         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .tool-grid {
+                grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+                gap: 12px;
+            }
+            .tool-card {
+                padding: 15px 10px;
+                min-height: 100px;
+            }
+            .tool-card i {
+                font-size: 2em;
+            }
+            .tool-card h3 {
+                font-size: 0.9em;
+            }
+            header h1 {
+                font-size: 1.8em;
+            }
+            .tool-interface {
+                padding: 20px;
+            }
+            .paint-controls {
+                flex-direction: column; /* Stack paint controls vertically */
+                align-items: flex-start;
+            }
+            .paint-controls input[type="range"] {
+                 width: 100%; /* Full width slider */
+             }
+        }
+
+        @media (max-width: 480px) {
+            .tool-grid {
+                grid-template-columns: repeat(2, 1fr); /* Fixed 2 columns on very small screens */
+                gap: 10px;
+            }
+             .tool-card {
+                padding: 12px 8px;
+            }
+             .tool-card i {
+                font-size: 1.8em;
+            }
+            header h1 {
+                font-size: 1.6em;
+            }
+             .tool-interface input, .tool-interface textarea, .tool-interface select, .tool-interface button {
+                 font-size: 0.95em; /* Slightly smaller font size for inputs/buttons */
+             }
+        }
+
+        /* Simple Image Tool Placeholders */
+        #imageToolsOutput img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 15px;
+            display: block;
+        }
+        #imageToolsOutput canvas {
+             max-width: 100%;
+             height: auto;
+             margin-top: 15px;
+             display: block;
+             border: 1px dashed #ccc;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>All-in-One Tools</h1>
+        </header>
+
+        <main id="mainContent">
+            <!-- Tool Categories and Cards -->
+             <section class="tool-category">
+                <h2>Essential Tools</h2>
+                <div class="tool-grid">
+                    <div class="tool-card" data-tool="calculator">
+                        <i class="fas fa-calculator"></i>
+                        <h3>Calculator</h3>
+                    </div>
+                    <div class="tool-card" data-tool="notes">
+                        <i class="fas fa-sticky-note"></i>
+                        <h3>Notes</h3>
+                    </div>
+                     <div class="tool-card" data-tool="qrGenerator">
+                        <i class="fas fa-qrcode"></i>
+                        <h3>QR Generator</h3>
+                    </div>
+                     <div class="tool-card" data-tool="myLocation">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>My Location</h3>
+                    </div>
+                     <div class="tool-card" data-tool="deviceInfo">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>Device Info</h3>
+                    </div>
+                </div>
+            </section>
+
+            <section class="tool-category">
+                 <h2>Time & Date Tools</h2>
+                 <div class="tool-grid">
+                     <div class="tool-card" data-tool="timer">
+                         <i class="fas fa-stopwatch-20"></i>
+                         <h3>Timer</h3>
+                     </div>
+                     <div class="tool-card" data-tool="stopwatch">
+                        <i class="fas fa-stopwatch"></i>
+                        <h3>Stopwatch</h3>
+                    </div>
+                     <div class="tool-card" data-tool="dayCounter">
+                         <i class="fas fa-calendar-alt"></i>
+                         <h3>Day Counter</h3>
+                     </div>
+                 </div>
+             </section>
+
+            <section class="tool-category">
+                 <h2>Text & Code Tools</h2>
+                 <div class="tool-grid">
+                     <div class="tool-card" data-tool="textToSpeech">
+                         <i class="fas fa-volume-up"></i>
+                         <h3>Text to Speech</h3>
+                     </div>
+                     <div class="tool-card" data-tool="morseCode">
+                         <i class="fas fa-ellipsis-h"></i>
+                         <h3>Morse Code</h3>
+                     </div>
+                     <div class="tool-card" data-tool="passwordGenerator">
+                        <i class="fas fa-key"></i>
+                        <h3>Password Gen</h3>
+                    </div>
+                     <div class="tool-card" data-tool="wordCounter">
+                         <i class="fas fa-file-word"></i>
+                         <h3>Word Counter</h3>
+                     </div>
+                 </div>
+             </section>
+
+            <section class="tool-category">
+                 <h2>Converters & Calculators</h2>
+                 <div class="tool-grid">
+                     <div class="tool-card" data-tool="unitConverter">
+                        <i class="fas fa-exchange-alt"></i>
+                        <h3>Unit Converter</h3>
+                    </div>
+                    <div class="tool-card" data-tool="currencyConverter">
+                        <i class="fas fa-dollar-sign"></i>
+                        <h3>Currency (API Req)</h3>
+                    </div>
+                     <div class="tool-card" data-tool="bmiCalculator">
+                        <i class="fas fa-weight"></i>
+                        <h3>BMI Calculator</h3>
+                    </div>
+                 </div>
+             </section>
+
+             <section class="tool-category">
+                 <h2>Creative & Fun Tools</h2>
+                 <div class="tool-grid">
+                      <div class="tool-card" data-tool="colorPicker">
+                        <i class="fas fa-palette"></i>
+                        <h3>Color Picker</h3>
+                    </div>
+                     <div class="tool-card" data-tool="paint">
+                        <i class="fas fa-paint-brush"></i>
+                        <h3>Simple Paint</h3>
+                    </div>
+                     <div class="tool-card" data-tool="imageTools">
+                         <i class="fas fa-image"></i>
+                         <h3>Image Tools</h3>
+                     </div>
+                     <div class="tool-card" data-tool="coinFlip">
+                         <i class="fas fa-coins"></i>
+                         <h3>Coin Flip</h3>
+                     </div>
+                     <div class="tool-card" data-tool="randomNumber">
+                         <i class="fas fa-random"></i>
+                         <h3>Random Number</h3>
+                     </div>
+                 </div>
+             </section>
+        </main>
+
+        <!-- Tool Interfaces (Hidden by default) -->
+
+        <!-- Timer -->
+        <div id="tool-timer" class="tool-interface">
+            <h2>Timer</h2>
+            <label for="timerHours">Hours:</label>
+            <input type="number" id="timerHours" min="0" value="0">
+            <label for="timerMinutes">Minutes:</label>
+            <input type="number" id="timerMinutes" min="0" max="59" value="5">
+            <label for="timerSeconds">Seconds:</label>
+            <input type="number" id="timerSeconds" min="0" max="59" value="0">
+            <div id="timerDisplay" class="tool-output" style="font-size: 2em; text-align: center;">00:05:00</div>
+            <button id="startTimerBtn">Start</button>
+            <button id="pauseTimerBtn">Pause</button>
+            <button id="resetTimerBtn">Reset</button>
+            <button class="back-button">Back to Tools</button>
+        </div>
+
+        <!-- Day Counter -->
+        <div id="tool-dayCounter" class="tool-interface">
+            <h2>Day Counter</h2>
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate">
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate">
+            <button id="calculateDaysBtn">Calculate Difference</button>
+            <div id="dayCounterOutput" class="tool-output"></div>
+            <button class="back-button">Back to Tools</button>
+        </div>
+
+        <!-- Calculator -->
+        <div id="tool-calculator" class="tool-interface">
+            <h2>Calculator</h2>
+            <input type="text" id="calcDisplay" style="text-align: right; font-size: 1.5em; margin-bottom: 10px;" readonly>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                <button onclick="calcAppend('7')">7</button>
+                <button onclick="calcAppend('8')">8</button>
+                <button onclick="calcAppend('9')">9</button>
+                <button onclick="calcOperator('/')">/</button>
+                <button onclick="calcAppend('4')">4</button>
+                <button onclick="calcAppend('5')">5</button>
+                <button onclick="calcAppend('6')">6</button>
+                <button onclick="calcOperator('*')">*</button>
+                <button onclick="calcAppend('1')">1</button>
+                <button onclick="calcAppend('2')">2</button>
+                <button onclick="calcAppend('3')">3</button>
+                <button onclick="calcOperator('-')">-</button>
+                <button onclick="calcAppend('0')">0</button>
+                <button onclick="calcAppend('.')">.</button>
+                <button onclick="calcClear()">C</button>
+                <button onclick="calcOperator('+')">+</button>
+                <button onclick="calcCalculate()" style="grid-column: span 4;">=</button>
+            </div>
+             <button class="back-button" style="margin-top:15px; width: 100%;">Back to Tools</button>
+        </div>
+
+        <!-- Text to Speech -->
+        <div id="tool-textToSpeech" class="tool-interface">
+            <h2>Text to Speech</h2>
+            <label for="ttsText">Enter text:</label>
+            <textarea id="ttsText" rows="5">Hello! This is a text to speech example.</textarea>
+            <button id="speakBtn">Speak</button>
+            <div id="ttsStatus" class="tool-output">Ready.</div>
+             <button class="back-button">Back to Tools</button>
+        </div>
+
+        <!-- QR Code Generator -->
+        <div id="tool-qrGenerator" class="tool-interface">
+            <h2>QR Code Generator</h2>
+            <label for="qrInput">Text or URL:</label>
+            <input type="text" id="qrInput" placeholder="Enter text or URL here">
+            <button id="generateQrBtn">Generate QR Code</button>
+            <div id="qrCodeOutput" class="tool-output">
+                <!-- QR code will be displayed here -->
+                 <p>QR Code will appear here.</p>
+            </div>
+             <button class="back-button">Back to Tools</button>
+        </div>
+
+        <!-- My Location -->
+        <div id="tool-myLocation" class="tool-interface">
+            <h2>My Location</h2>
+            <button id="getLocationBtn">Get My Location</button>
+            <div id="locationOutput" class="tool-output">Click the button to get your location. You might need to grant permission.</div>
+            <button class="back-button">Back to Tools</button>
+        </div>
+
+        <!-- Color Picker -->
+         <div id="tool-colorPicker" class="tool-interface">
+            <h2>Color Picker</h2>
+            <label for="colorPickerInput">Select Color:</label>
+            <input type="color" id="colorPickerInput" value="#6e8efb" style="height: 50px; padding: 5px;">
+            <div id="colorPickerOutput" class="tool-output">Selected Color: #6e8efb</div>
+             <button class="back-button">Back to Tools</button>
+        </div>
+
+        <!-- Morse Code Translator -->
+        <div id="tool-morseCode" class="tool-interface">
+            <h2>Morse Code Translator</h2>
+            <label for="morseInputText">Text:</label>
+            <textarea id="morseInputText" rows="3" placeholder="Enter text to convert to Morse"></textarea>
+            <button id="toMorseBtn">To Morse</button>
+            <label for="morseInputCode">Morse Code:</label>
+            <textarea id="morseInputCode" rows="3" placeholder="Enter Morse (use space between letters, / between words)"></textarea>
+            <button id="toTextBtn">To Text</button>
+            <div id="morseOutput" class="tool-output">Output will appear here.</div>
+             <button class="back-button">Back to Tools</button>
+        </div>
+
+        <!-- Device Info -->
+        <div id="tool-deviceInfo" class="tool-interface">
+            <h2>Device Info</h2>
+            <div id="deviceInfoOutput" class="tool-output">Gathering information...</div>
+             <button class="back-button">Back to Tools</button>
+        </div>
+
+        <!-- Simple Paint -->
+        <div id="tool-paint" class="tool-interface">
+            <h2>Simple Paint</h2>
+            <div class="paint-controls">
+                 <label for="paintColor">Color:</label>
+                 <input type="color" id="paintColor" value="#000000">
+                 <label for="paintBrushSize">Size:</label>
+                 <input type="range" id="paintBrushSize" min="1" max="20" value="5">
+                 <span id="brushSizeValue">5</span>px
+                 <button id="clearCanvasBtn">Clear</button>
+            </div>
+            <canvas id="paintCanvas" width="500" height="300"></canvas>
+            <button class="back-button">Back to Tools</button>
+        </div>
+
+        <!-- Image Tools (Basic Placeholder) -->
+        <div id="tool-imageTools" class="tool-interface">
+             <h2>Image Tools (Basic)</h2>
+             <p>Note: Advanced cropping/enhancement requires complex libraries and more setup. This is a basic version.</p>
+             <label for="imageUpload">Upload Image:</label>
+             <input type="file" id="imageUpload" accept="image/*">
+
+             <div id="imageToolsOutput">
+                 <p>Uploaded image will appear here.</p>
+                 <img id="uploadedImagePreview" src="#" alt="Uploaded Image" style="display: none; max-width: 100%; height: auto;" />
+                 <canvas id="imageCanvas" style="display: none;"></canvas> <!-- For potential manipulation -->
+             </div>
+             <button id="imageGrayscaleBtn" style="display: none;">Make Grayscale</button>
+             <button id="imageResetBtn" style="display: none;">Reset Image</button>
+             <button class="back-button">Back to Tools</button>
+         </div>
+
+        <!-- Password Generator -->
+         <div id="tool-passwordGenerator" class="tool-interface">
+            <h2>Password Generator</h2>
+            <label for="pwLength">Length:</label>
+            <input type="number" id="pwLength" min="4" max="64" value="12">
+            <label><input type="checkbox" id="pwUppercase" checked> Uppercase (A-Z)</label><br>
+            <label><input type="checkbox" id="pwLowercase" checked> Lowercase (a-z)</label><br>
+            <label><input type="checkbox" id="pwNumbers" checked> Numbers (0-9)</label><br>
+            <label><input type="checkbox" id="pwSymbols"> Symbols (!@#$%^&*)</label><br>
+            <button id="generatePwBtn">Generate Password</button>
+            <div id="passwordOutput" class="tool-output" style="font-family: monospace; font-size: 1.1em;">Click Generate...</div>
+            <button id="copyPwBtn">Copy</button>
+             <button class="back-button">Back to Tools</button>
+        </div>
+
+        <!-- Unit Converter -->
+        <div id="tool-unitConverter" class="tool-interface">
+            <h2>Unit Converter</h2>
+            <label for="ucCategory">Category:</label>
+            <select id="ucCategory">
+                <option value="length">Length</option>
+                <option value="weight">Weight</option>
+                <option value="temperature">Temperature</option>
+            </select>
+             <label for="ucInputValue">Value:</label>
+            <input type="number" id="ucInputValue" value="1">
+            <label for="ucFromUnit">From:</label>
+            <select id="ucFromUnit"></select>
+            <label for="ucToUnit">To:</label>
+            <select id="ucToUnit"></select>
+             <!-- Removed Convert Button
+             <button id="convertUnitBtn">Convert</button>
+             -->
+            <div id="unitConverterOutput" class="tool-output">Result...</div>
+            <button class="back-button">Back to Tools</button>
+        </div>
+
+        <!-- Stopwatch -->
+         <div id="tool-stopwatch" class="tool-interface">
+             <h2>Stopwatch</h2>
+             <div id="stopwatchDisplay" class="tool-output" style="font-size: 2em; text-align: center;">00:00:00.000</div>
+             <button id="startStopwatchBtn">Start</button>
+             <button id="stopStopwatchBtn">Stop</button>
+             <button id="resetStopwatchBtn">Reset</button>
+             <button id="lapStopwatchBtn">Lap</button>
+             <div id="stopwatchLaps" class="tool-output" style="margin-top: 15px; max-height: 150px; overflow-y: auto;">Laps:</div>
+             <button class="back-button">Back to Tools</button>
+         </div>
+
+        <!-- Notes -->
+        <div id="tool-notes" class="tool-interface">
+            <h2>Simple Notes</h2>
+            <p>Notes are saved automatically in your browser's local storage.</p>
+            <textarea id="notesArea" rows="10" placeholder="Start typing your notes here..."></textarea>
+             <button class="back-button" style="margin-top: 10px;">Back to Tools</button>
+        </div>
+
+        <!-- BMI Calculator -->
+        <div id="tool-bmiCalculator" class="tool-interface">
+             <h2>BMI Calculator</h2>
+             <label for="bmiWeight">Weight (kg):</label>
+             <input type="number" id="bmiWeight" step="0.1" min="1">
+             <label for="bmiHeight">Height (cm):</label>
+             <input type="number" id="bmiHeight" step="1" min="50">
+              <!-- Removed Calculate Button
+              <button id="calculateBmiBtn">Calculate BMI</button>
+              -->
+             <div id="bmiOutput" class="tool-output">Enter weight and height.</div>
+             <button class="back-button">Back to Tools</button>
+         </div>
+
+         <!-- Coin Flip -->
+         <div id="tool-coinFlip" class="tool-interface">
+             <h2>Coin Flip</h2>
+             <button id="flipCoinBtn">Flip Coin</button>
+             <div id="coinFlipOutput" class="tool-output" style="font-size: 1.5em; text-align: center;">Click the button to flip!</div>
+             <button class="back-button">Back to Tools</button>
+         </div>
+
+         <!-- Random Number Generator -->
+         <div id="tool-randomNumber" class="tool-interface">
+             <h2>Random Number Generator</h2>
+             <label for="rngMin">Min:</label>
+             <input type="number" id="rngMin" value="1">
+             <label for="rngMax">Max:</label>
+             <input type="number" id="rngMax" value="100">
+             <button id="generateRandomBtn">Generate</button>
+             <div id="randomNumberOutput" class="tool-output" style="font-size: 1.5em; text-align: center;">Result...</div>
+             <button class="back-button">Back to Tools</button>
+         </div>
+
+         <!-- Currency Converter (Placeholder - Needs API Key) -->
+          <div id="tool-currencyConverter" class="tool-interface">
+              <h2>Currency Converter</h2>
+              <label for="currencyAmount">Amount:</label>
+              <input type="number" id="currencyAmount" value="100">
+              <label for="currencyFrom">From:</label>
+              <select id="currencyFrom">
+                  <!-- Options will be loaded by JS if API works -->
+                   <option value="USD">USD</option>
+                   <option value="EUR">EUR</option>
+                   <option value="GBP">GBP</option>
+                   <option value="JPY">JPY</option>
+                   <option value="INR">INR</option>
+              </select>
+              <label for="currencyTo">To:</label>
+              <select id="currencyTo">
+                  <!-- Options will be loaded by JS if API works -->
+                   <option value="USD">USD</option>
+                   <option value="EUR">EUR</option>
+                   <option value="GBP">GBP</option>
+                   <option value="JPY">JPY</option>
+                   <option value="INR">INR</option>
+              </select>
+              <button id="convertCurrencyBtn">Convert</button>
+              <div id="currencyOutput" class="tool-output">Enter values and click Convert for real-time rates (API Key needed).</div>
+              <button class="back-button">Back to Tools</button>
+          </div>
+
+         <!-- Word Counter -->
+         <div id="tool-wordCounter" class="tool-interface">
+             <h2>Word Counter</h2>
+             <textarea id="wordCounterText" rows="6" placeholder="Paste or type your text here..."></textarea>
+             <div id="wordCounterOutput" class="tool-output">Words: 0, Characters: 0</div>
+             <button class="back-button" style="margin-top: 10px;">Back to Tools</button>
+         </div>
+
+    </div> <!-- End Container -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainContent = document.getElementById('mainContent');
+            const toolCards = document.querySelectorAll('.tool-card');
+            const toolInterfaces = document.querySelectorAll('.tool-interface');
+            const backButtons = document.querySelectorAll('.back-button');
+
+            // --- Navigation ---
+            function showTool(toolId) {
+                mainContent.style.display = 'none';
+                toolInterfaces.forEach(iface => iface.style.display = 'none');
+                const toolElement = document.getElementById(`tool-${toolId}`);
+                if (toolElement) {
+                    toolElement.style.display = 'block';
+                    // Trigger tool-specific init if needed
+                    if (typeof window[`init_${toolId}`] === 'function') {
+                       window[`init_${toolId}`]();
+                    }
+                     // Trigger initial calculation for real-time tools
+                     if (toolId === 'unitConverter') updateUnitConversion();
+                     if (toolId === 'bmiCalculator') updateBmiCalculation();
+
+                } else {
+                    console.error(`Tool interface not found for ID: tool-${toolId}`);
+                    showMainGrid(); // Go back if tool not found
+                }
+                 window.scrollTo(0, 0); // Scroll to top when showing a tool
+            }
+
+            function showMainGrid() {
+                toolInterfaces.forEach(iface => iface.style.display = 'none');
+                mainContent.style.display = 'block';
+                window.scrollTo(0, 0); // Scroll to top when showing main grid
+            }
+
+            toolCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const toolId = card.getAttribute('data-tool');
+                    showTool(toolId);
+                });
+            });
+
+            backButtons.forEach(button => {
+                button.addEventListener('click', showMainGrid);
+            });
+
+
+            // --- Tool Implementations ---
+
+            // Timer (No changes needed for real-time behavior)
+            let timerInterval;
+            let timerSecondsLeft;
+            const timerDisplay = document.getElementById('timerDisplay');
+            const hoursInput = document.getElementById('timerHours');
+            const minutesInput = document.getElementById('timerMinutes');
+            const secondsInput = document.getElementById('timerSeconds');
+
+            function updateTimerDisplay() { /* ... as before ... */
+                if (timerSecondsLeft < 0) return;
+                const hours = Math.floor(timerSecondsLeft / 3600);
+                const minutes = Math.floor((timerSecondsLeft % 3600) / 60);
+                const seconds = timerSecondsLeft % 60;
+                timerDisplay.textContent =
+                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+            document.getElementById('startTimerBtn').addEventListener('click', () => { /* ... as before ... */
+                clearInterval(timerInterval);
+                if (!timerSecondsLeft) {
+                     const hours = parseInt(hoursInput.value) || 0;
+                     const minutes = parseInt(minutesInput.value) || 0;
+                     const seconds = parseInt(secondsInput.value) || 0;
+                     timerSecondsLeft = (hours * 3600) + (minutes * 60) + seconds;
+                }
+                if (timerSecondsLeft > 0) {
+                    updateTimerDisplay();
+                    timerInterval = setInterval(() => {
+                        timerSecondsLeft--;
+                        updateTimerDisplay();
+                        if (timerSecondsLeft <= 0) {
+                            clearInterval(timerInterval);
+                            timerDisplay.textContent = "Time's up!";
+                             alert("Timer Finished!");
+                            timerSecondsLeft = 0;
+                        }
+                    }, 1000);
+                }
+            });
+            document.getElementById('pauseTimerBtn').addEventListener('click', () => { /* ... as before ... */
+                clearInterval(timerInterval);
+            });
+            document.getElementById('resetTimerBtn').addEventListener('click', () => { /* ... as before ... */
+                clearInterval(timerInterval);
+                const hours = parseInt(hoursInput.value) || 0;
+                const minutes = parseInt(minutesInput.value) || 0;
+                const seconds = parseInt(secondsInput.value) || 0;
+                timerSecondsLeft = (hours * 3600) + (minutes * 60) + seconds;
+                updateTimerDisplay();
+                timerSecondsLeft = 0;
+             });
+             window.init_timer = () => { /* ... as before ... */
+                 const hours = parseInt(hoursInput.value) || 0;
+                 const minutes = parseInt(minutesInput.value) || 0;
+                 const seconds = parseInt(secondsInput.value) || 0;
+                 timerSecondsLeft = (hours * 3600) + (minutes * 60) + seconds;
+                 updateTimerDisplay();
+                 timerSecondsLeft = 0;
+             }
+
+
+            // Day Counter (Kept as button-based)
+             window.init_dayCounter = () => { /* ... as before ... */
+                 const today = new Date().toISOString().split('T')[0];
+                 if (!document.getElementById('startDate').value) {
+                    document.getElementById('startDate').value = today;
+                 }
+                  if (!document.getElementById('endDate').value) {
+                    document.getElementById('endDate').value = today;
+                 }
+             }
+            document.getElementById('calculateDaysBtn').addEventListener('click', () => { /* ... as before ... */
+                 const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                const outputDiv = document.getElementById('dayCounterOutput');
+
+                if (startDate && endDate) {
+                    const start = new Date(startDate);
+                    const end = new Date(endDate);
+                    const timeDiff = end.getTime() - start.getTime();
+                    const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                     if (isNaN(dayDiff)) {
+                         outputDiv.textContent = "Invalid date format.";
+                     } else if (dayDiff < 0) {
+                         outputDiv.textContent = `Difference: ${Math.abs(dayDiff)} days (End date is before start date).`;
+                     } else {
+                         outputDiv.textContent = `Difference: ${dayDiff} days.`;
+                     }
+
+                } else {
+                    outputDiv.textContent = "Please select both start and end dates.";
+                }
+            });
+
+            // Calculator (No changes needed)
+            const calcDisplay = document.getElementById('calcDisplay');
+            let calcCurrentInput = '';
+            let calcOperator = null;
+            let calcPreviousInput = '';
+            window.calcAppend = (value) => { /* ... as before ... */
+                if (value === '.' && calcCurrentInput.includes('.')) return;
+                calcCurrentInput += value;
+                calcDisplay.value = calcCurrentInput;
+            };
+             window.calcOperator = (op) => { /* ... as before ... */
+                if (calcCurrentInput === '' && calcPreviousInput === '') return;
+                if (calcCurrentInput !== '') {
+                    if (calcPreviousInput !== '') {
+                       calcCalculate();
+                    }
+                     calcPreviousInput = calcCurrentInput;
+                     calcCurrentInput = '';
+                }
+                 calcOperator = op;
+            };
+             window.calcCalculate = () => { /* ... as before ... */
+                 if (calcOperator === null || calcPreviousInput === '' || calcCurrentInput === '') return;
+                 let result;
+                 const prev = parseFloat(calcPreviousInput);
+                 const current = parseFloat(calcCurrentInput);
+                  if (isNaN(prev) || isNaN(current)) {
+                     calcClear();
+                     calcDisplay.value = "Error";
+                     return;
+                 }
+                 switch (calcOperator) {
+                     case '+': result = prev + current; break;
+                     case '-': result = prev - current; break;
+                     case '*': result = prev * current; break;
+                     case '/':
+                         if (current === 0) {
+                             calcClear();
+                             calcDisplay.value = "Div by Zero";
+                             return;
+                         }
+                         result = prev / current;
+                         break;
+                     default: return;
+                 }
+                 calcDisplay.value = result;
+                 calcCurrentInput = String(result);
+                 calcOperator = null;
+                 calcPreviousInput = '';
+             };
+             window.calcClear = () => { /* ... as before ... */
+                 calcCurrentInput = '';
+                calcOperator = null;
+                calcPreviousInput = '';
+                calcDisplay.value = '';
+            };
+
+            // Text to Speech (Button-based)
+            const ttsText = document.getElementById('ttsText');
+            const speakBtn = document.getElementById('speakBtn');
+            const ttsStatus = document.getElementById('ttsStatus');
+            if ('speechSynthesis' in window) { /* ... as before ... */
+                 speakBtn.addEventListener('click', () => {
+                     if (ttsText.value !== '') {
+                         const utterance = new SpeechSynthesisUtterance(ttsText.value);
+                         utterance.onstart = () => ttsStatus.textContent = "Speaking...";
+                         utterance.onend = () => ttsStatus.textContent = "Finished.";
+                         utterance.onerror = (e) => ttsStatus.textContent = `Error: ${e.error}`;
+                         window.speechSynthesis.speak(utterance);
+                     } else {
+                          ttsStatus.textContent = "Please enter some text.";
+                     }
+                 });
+             } else { /* ... as before ... */
+                 ttsStatus.textContent = "Sorry, your browser doesn't support Text-to-Speech.";
+                 speakBtn.disabled = true;
+             }
+
+
+            // QR Code Generator (Button-based)
+            const qrInput = document.getElementById('qrInput');
+            const generateQrBtn = document.getElementById('generateQrBtn');
+            const qrCodeOutput = document.getElementById('qrCodeOutput');
+            generateQrBtn.addEventListener('click', () => { /* ... as before ... */
+                 const text = qrInput.value.trim();
+                 qrCodeOutput.innerHTML = '';
+                if (text) {
+                    try {
+                        const qr = new QRious({
+                            element: document.createElement('canvas'),
+                            value: text,
+                            size: 200,
+                            padding: 10,
+                            level: 'H'
+                        });
+                        qrCodeOutput.appendChild(qr.image);
+                    } catch (e) {
+                         console.error("QRious error:", e);
+                         qrCodeOutput.innerHTML = '<p>Error generating QR code.</p>';
+                    }
+                } else {
+                    qrCodeOutput.innerHTML = '<p>Please enter text or URL to generate QR code.</p>';
+                }
+            });
+
+             // My Location (Button-based)
+             const getLocationBtn = document.getElementById('getLocationBtn');
+             const locationOutput = document.getElementById('locationOutput');
+             getLocationBtn.addEventListener('click', () => { /* ... as before ... */
+                 if (navigator.geolocation) {
+                     locationOutput.textContent = "Getting location...";
+                     navigator.geolocation.getCurrentPosition(
+                         (position) => {
+                             const lat = position.coords.latitude;
+                             const lon = position.coords.longitude;
+                             locationOutput.innerHTML = `Latitude: ${lat.toFixed(6)}<br>Longitude: ${lon.toFixed(6)}
+                                 <br><a href="https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}" target="_blank">View on OpenStreetMap</a>`;
+                         },
+                         (error) => {
+                             let message = "Error getting location: ";
+                             switch (error.code) {
+                                 case error.PERMISSION_DENIED: message += "Permission denied."; break;
+                                 case error.POSITION_UNAVAILABLE: message += "Location information unavailable."; break;
+                                 case error.TIMEOUT: message += "Request timed out."; break;
+                                 default: message += `Unknown error (${error.code}).`; break;
+                             }
+                             locationOutput.textContent = message;
+                         },
+                         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                     );
+                 } else {
+                     locationOutput.textContent = "Geolocation is not supported by your browser.";
+                 }
+             });
+
+            // Color Picker (Already real-time)
+            const colorPickerInput = document.getElementById('colorPickerInput');
+            const colorPickerOutput = document.getElementById('colorPickerOutput');
+            colorPickerInput.addEventListener('input', (event) => { /* ... as before ... */
+                 const color = event.target.value;
+                 colorPickerOutput.textContent = `Selected Color: ${color}`;
+                 colorPickerOutput.style.backgroundColor = color;
+                 const hex = color.replace('#', '');
+                 const r = parseInt(hex.substring(0, 2), 16);
+                 const g = parseInt(hex.substring(2, 4), 16);
+                 const b = parseInt(hex.substring(4, 6), 16);
+                 const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+                 colorPickerOutput.style.color = brightness > 128 ? '#000000' : '#ffffff';
+            });
+            window.init_colorPicker = () => colorPickerInput.dispatchEvent(new Event('input'));
+
+
+            // Morse Code (Button-based)
+            const morseMap = { /* ... as before ... */
+                'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-', 'Y': '-.--', 'Z': '--..',
+                 '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.', '0': '-----',
+                 ' ': '/', '.': '.-.-.-', ',': '--..--', '?': '..--..', "'": '.----.', '!': '-.-.--', '/': '-..-.', '(': '-.--.', ')': '-.--.-', '&': '.-...', ':': '---...', ';': '-.-.-.', '=': '-...-', '+': '.-.-.', '-': '-....-', '_': '..--.-', '"': '.-..-.', '$': '...-..-', '@': '.--.-.'
+            };
+             const textToMorseMap = morseMap;
+             const morseToTextMap = Object.fromEntries(Object.entries(morseMap).map(([k, v]) => [v, k])); // Reverse map
+             document.getElementById('toMorseBtn').addEventListener('click', () => { /* ... as before ... */
+                  const text = document.getElementById('morseInputText').value.toUpperCase();
+                 let morse = '';
+                 for (const char of text) {
+                     if (textToMorseMap[char]) {
+                         morse += textToMorseMap[char] + ' ';
+                     } else {
+                         morse += '? ';
+                     }
+                 }
+                 document.getElementById('morseInputCode').value = morse.trim();
+                 document.getElementById('morseOutput').textContent = `Morse: ${morse.trim()}`;
+             });
+             document.getElementById('toTextBtn').addEventListener('click', () => { /* ... as before ... */
+                  const morse = document.getElementById('morseInputCode').value.trim().split(' ');
+                 let text = '';
+                 for (const code of morse) {
+                     if (morseToTextMap[code]) {
+                         text += morseToTextMap[code];
+                     } else if (code === '/') {
+                         text += ' ';
+                     } else if (code !== '') {
+                         text += '?';
+                     }
+                 }
+                 document.getElementById('morseInputText').value = text;
+                 document.getElementById('morseOutput').textContent = `Text: ${text}`;
+             });
+
+
+            // Device Info (Static info)
+             window.init_deviceInfo = () => { /* ... as before ... */
+                 const outputDiv = document.getElementById('deviceInfoOutput');
+                 let info = `User Agent: ${navigator.userAgent}<br>`;
+                 info += `Platform: ${navigator.platform}<br>`;
+                 info += `Language: ${navigator.language}<br>`;
+                 info += `Screen Resolution: ${screen.width}x${screen.height}<br>`;
+                 info += `Available Screen: ${screen.availWidth}x${screen.availHeight}<br>`;
+                 info += `Color Depth: ${screen.colorDepth}-bit<br>`;
+                 info += `Cookies Enabled: ${navigator.cookieEnabled}<br>`;
+                 if (navigator.connection) { info += `Connection Type: ${navigator.connection.effectiveType}<br>`; }
+                 if (navigator.deviceMemory) { info += `Device Memory (approx): ${navigator.deviceMemory} GB<br>`; }
+                 outputDiv.innerHTML = info;
+            };
+
+            // Simple Paint (Already real-time)
+            const canvas = document.getElementById('paintCanvas');
+            const ctx = canvas.getContext('2d');
+            /* ... other paint variables as before ... */
+            let isPainting = false; let lastX = 0; let lastY = 0;
+            const paintColorInput = document.getElementById('paintColor');
+            const brushSizeInput = document.getElementById('paintBrushSize');
+            const brushSizeValueSpan = document.getElementById('brushSizeValue');
+            const clearCanvasBtn = document.getElementById('clearCanvasBtn');
+            function resizeCanvas() { /* ... as before ... */
+                 const toolInterface = document.getElementById('tool-paint');
+                 const containerWidth = toolInterface.clientWidth - 50;
+                 canvas.width = Math.min(containerWidth > 100 ? containerWidth : 300, 600);
+                 canvas.height = Math.min(containerWidth > 100 ? containerWidth * 0.6 : 250, 400);
+                 ctx.fillStyle = '#ffffff';
+                 ctx.fillRect(0, 0, canvas.width, canvas.height);
+             }
+            window.init_paint = () => { /* ... as before ... */
+                resizeCanvas();
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+             }
+            brushSizeInput.addEventListener('input', (e) => { brushSizeValueSpan.textContent = e.target.value; });
+            clearCanvasBtn.addEventListener('click', () => { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height); });
+            function getPaintPosition(event) { /* ... as before ... */
+                  const rect = canvas.getBoundingClientRect();
+                  const clientX = event.clientX || (event.touches && event.touches[0].clientX);
+                  const clientY = event.clientY || (event.touches && event.touches[0].clientY);
+                  return { x: clientX - rect.left, y: clientY - rect.top };
+             }
+            function startPainting(e) { /* ... as before ... */
+                 isPainting = true;
+                 const pos = getPaintPosition(e);
+                 [lastX, lastY] = [pos.x, pos.y];
+                 e.preventDefault();
+             }
+            function draw(e) { /* ... as before ... */
+                 if (!isPainting) return;
+                 e.preventDefault();
+                 const pos = getPaintPosition(e);
+                 ctx.beginPath();
+                 ctx.strokeStyle = paintColorInput.value;
+                 ctx.lineWidth = brushSizeInput.value;
+                 ctx.moveTo(lastX, lastY);
+                 ctx.lineTo(pos.x, pos.y);
+                 ctx.stroke();
+                 [lastX, lastY] = [pos.x, pos.y];
+             }
+            function stopPainting() { /* ... as before ... */
+                 if (isPainting) { isPainting = false; ctx.beginPath(); }
+             }
+             canvas.addEventListener('mousedown', startPainting); canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseup', stopPainting); canvas.addEventListener('mouseout', stopPainting);
+             canvas.addEventListener('touchstart', startPainting); canvas.addEventListener('touchmove', draw); canvas.addEventListener('touchend', stopPainting); canvas.addEventListener('touchcancel', stopPainting);
+
+
+            // Image Tools (Action-based)
+            const imageUpload = document.getElementById('imageUpload');
+            /* ... other image variables as before ... */
+            const uploadedImagePreview = document.getElementById('uploadedImagePreview');
+            const imageCanvas = document.getElementById('imageCanvas');
+            const imgCtx = imageCanvas.getContext('2d');
+            const imageGrayscaleBtn = document.getElementById('imageGrayscaleBtn');
+            const imageResetBtn = document.getElementById('imageResetBtn');
+            let originalImageData = null;
+            imageUpload.addEventListener('change', (event) => { /* ... as before ... */
+                 const file = event.target.files[0];
+                 if (file && file.type.startsWith('image/')) {
+                     const reader = new FileReader();
+                     reader.onload = (e) => {
+                         uploadedImagePreview.src = e.target.result;
+                         uploadedImagePreview.style.display = 'block';
+                         imageCanvas.style.display = 'none';
+                         imageGrayscaleBtn.style.display = 'inline-block';
+                         imageResetBtn.style.display = 'inline-block';
+                         const img = new Image();
+                         img.onload = () => {
+                             const maxWidth = uploadedImagePreview.parentElement.clientWidth || 500;
+                             const scale = Math.min(maxWidth / img.width, 1);
+                             imageCanvas.width = img.width * scale;
+                             imageCanvas.height = img.height * scale;
+                             imgCtx.drawImage(img, 0, 0, imageCanvas.width, imageCanvas.height);
+                             try { originalImageData = imgCtx.getImageData(0, 0, imageCanvas.width, imageCanvas.height); }
+                             catch (secError) { console.warn("Could not get ImageData:", secError); originalImageData = null; imageGrayscaleBtn.disabled = true; }
+                         }
+                         img.src = e.target.result;
+                     }
+                     reader.readAsDataURL(file);
+                 } else { /* ... clear ... */
+                     uploadedImagePreview.style.display = 'none'; imageCanvas.style.display = 'none'; imageGrayscaleBtn.style.display = 'none'; imageResetBtn.style.display = 'none'; originalImageData = null;
+                 }
+             });
+             imageGrayscaleBtn.addEventListener('click', () => { /* ... as before ... */
+                  if (!originalImageData) return;
+                  const imageData = imgCtx.getImageData(0, 0, imageCanvas.width, imageCanvas.height);
+                  const data = imageData.data;
+                  for (let i = 0; i < data.length; i += 4) {
+                      const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                      data[i] = avg; data[i + 1] = avg; data[i + 2] = avg;
+                  }
+                  imgCtx.putImageData(imageData, 0, 0);
+                  uploadedImagePreview.style.display = 'none';
+                  imageCanvas.style.display = 'block';
+             });
+             imageResetBtn.addEventListener('click', () => { /* ... as before ... */
+                 if (originalImageData) { imgCtx.putImageData(originalImageData, 0, 0); uploadedImagePreview.style.display = 'none'; imageCanvas.style.display = 'block'; }
+                 else if (uploadedImagePreview.src && uploadedImagePreview.src !== '#') { uploadedImagePreview.style.display = 'block'; imageCanvas.style.display = 'none'; }
+             });
+
+
+            // Password Generator (Button-based)
+            const pwLengthInput = document.getElementById('pwLength');
+            /* ... other pw variables as before ... */
+            const pwUppercaseCheck = document.getElementById('pwUppercase');
+            const pwLowercaseCheck = document.getElementById('pwLowercase');
+            const pwNumbersCheck = document.getElementById('pwNumbers');
+            const pwSymbolsCheck = document.getElementById('pwSymbols');
+            const generatePwBtn = document.getElementById('generatePwBtn');
+            const passwordOutput = document.getElementById('passwordOutput');
+            const copyPwBtn = document.getElementById('copyPwBtn');
+            const charSets = { /* ... as before ... */
+                uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', lowercase: 'abcdefghijklmnopqrstuvwxyz', numbers: '0123456789', symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+            };
+            generatePwBtn.addEventListener('click', () => { /* ... as before ... */
+                 const length = parseInt(pwLengthInput.value);
+                 let availableChars = ''; let password = '';
+                 if (pwUppercaseCheck.checked) availableChars += charSets.uppercase;
+                 if (pwLowercaseCheck.checked) availableChars += charSets.lowercase;
+                 if (pwNumbersCheck.checked) availableChars += charSets.numbers;
+                 if (pwSymbolsCheck.checked) availableChars += charSets.symbols;
+                 if (availableChars.length === 0) { passwordOutput.textContent = "Select at least one character set."; return; }
+                 if (length < 4 || length > 64) { passwordOutput.textContent = "Length must be between 4 and 64."; return; }
+                 for (let i = 0; i < length; i++) {
+                     const randomIndex = Math.floor(Math.random() * availableChars.length);
+                     password += availableChars[randomIndex];
+                 }
+                 passwordOutput.textContent = password;
+            });
+            copyPwBtn.addEventListener('click', () => { /* ... as before ... */
+                 const password = passwordOutput.textContent;
+                 if (password && password !== "Click Generate..." && !password.startsWith("Select") && !password.startsWith("Length")) {
+                     navigator.clipboard.writeText(password).then(() => { alert('Password copied!'); }).catch(err => { alert('Could not copy password.'); });
+                 }
+             });
+
+             // Unit Converter (MODIFIED for real-time updates)
+             const ucCategory = document.getElementById('ucCategory');
+             const ucInputValue = document.getElementById('ucInputValue');
+             const ucFromUnit = document.getElementById('ucFromUnit');
+             const ucToUnit = document.getElementById('ucToUnit');
+             //const convertUnitBtn = document.getElementById('convertUnitBtn'); // Button removed/ignored
+             const unitConverterOutput = document.getElementById('unitConverterOutput');
+
+             const units = { /* ... as before ... */
+                 length: { 'Meter (m)': 1, 'Kilometer (km)': 1000, 'Centimeter (cm)': 0.01, 'Millimeter (mm)': 0.001, 'Mile (mi)': 1609.34, 'Yard (yd)': 0.9144, 'Foot (ft)': 0.3048, 'Inch (in)': 0.0254 },
+                 weight: { 'Kilogram (kg)': 1, 'Gram (g)': 0.001, 'Milligram (mg)': 0.000001, 'Pound (lb)': 0.453592, 'Ounce (oz)': 0.0283495 },
+                 temperature: { 'Celsius (°C)': 'c', 'Fahrenheit (°F)': 'f', 'Kelvin (K)': 'k' }
+             };
+
+             function populateUnitOptions() { /* ... as before ... */
+                 const category = ucCategory.value;
+                 const unitSet = units[category];
+                 ucFromUnit.innerHTML = ''; ucToUnit.innerHTML = '';
+                 for (const unitName in unitSet) {
+                     const fromOption = document.createElement('option'); fromOption.value = unitName; fromOption.textContent = unitName; ucFromUnit.appendChild(fromOption);
+                     const toOption = document.createElement('option'); toOption.value = unitName; toOption.textContent = unitName; ucToUnit.appendChild(toOption);
+                 }
+                 if (category === 'length') { ucFromUnit.value = 'Meter (m)'; ucToUnit.value = 'Foot (ft)'; }
+                 else if (category === 'weight') { ucFromUnit.value = 'Kilogram (kg)'; ucToUnit.value = 'Pound (lb)'; }
+                 else if (category === 'temperature') { ucFromUnit.value = 'Celsius (°C)'; ucToUnit.value = 'Fahrenheit (°F)'; }
+                  updateUnitConversion(); // Trigger initial conversion
+             }
+
+             function updateUnitConversion() { // Renamed from button click handler
+                 const category = ucCategory.value;
+                 const fromUnitName = ucFromUnit.value;
+                 const toUnitName = ucToUnit.value;
+                 const inputValue = parseFloat(ucInputValue.value);
+                 let result = NaN;
+
+                 if (isNaN(inputValue)) {
+                     unitConverterOutput.textContent = "Please enter a valid number.";
+                     return;
+                 }
+
+                 if (category === 'temperature') { /* ... temp logic as before ... */
+                     const fromType = units.temperature[fromUnitName];
+                     const toType = units.temperature[toUnitName];
+                     if (fromType === 'c') {
+                         if (toType === 'f') result = (inputValue * 9/5) + 32; else if (toType === 'k') result = inputValue + 273.15; else result = inputValue;
+                     } else if (fromType === 'f') {
+                         if (toType === 'c') result = (inputValue - 32) * 5/9; else if (toType === 'k') result = (inputValue - 32) * 5/9 + 273.15; else result = inputValue;
+                     } else if (fromType === 'k') {
+                         if (toType === 'c') result = inputValue - 273.15; else if (toType === 'f') result = (inputValue - 273.15) * 9/5 + 32; else result = inputValue;
+                     }
+                 } else { /* ... other units logic as before ... */
+                     const unitSet = units[category];
+                     const fromFactor = unitSet[fromUnitName];
+                     const toFactor = unitSet[toUnitName];
+                     if (fromFactor && toFactor) { const valueInBase = inputValue * fromFactor; result = valueInBase / toFactor; }
+                 }
+
+                 if (!isNaN(result)) {
+                    let formattedResult = parseFloat(result.toFixed(5));
+                    unitConverterOutput.textContent = `${inputValue} ${fromUnitName} = ${formattedResult} ${toUnitName}`;
+                 } else {
+                     unitConverterOutput.textContent = "Conversion error.";
+                 }
+             }
+
+             // Add event listeners to trigger updates
+             ucCategory.addEventListener('change', populateUnitOptions); // This already calls updateUnitConversion
+             ucInputValue.addEventListener('input', updateUnitConversion);
+             ucFromUnit.addEventListener('change', updateUnitConversion);
+             ucToUnit.addEventListener('change', updateUnitConversion);
+
+             // Initial population
+             populateUnitOptions(); // Call once on load
+
+
+            // Stopwatch (Already real-time)
+             let stopwatchInterval; let stopwatchStartTime; let stopwatchElapsedTime = 0; let stopwatchRunning = false;
+             const stopwatchDisplay = document.getElementById('stopwatchDisplay'); const stopwatchLapsDiv = document.getElementById('stopwatchLaps'); let lapCounter = 1;
+             function formatStopwatchTime(time) { /* ... as before ... */
+                 const ms = String(time % 1000).padStart(3, '0'); const s = String(Math.floor(time / 1000) % 60).padStart(2, '0');
+                 const m = String(Math.floor(time / 60000) % 60).padStart(2, '0'); const h = String(Math.floor(time / 3600000)).padStart(2, '0');
+                 return `${h}:${m}:${s}.${ms}`;
+             }
+             function updateStopwatch() { /* ... as before ... */
+                 const currentTime = Date.now(); stopwatchElapsedTime += currentTime - stopwatchStartTime; stopwatchStartTime = currentTime;
+                 stopwatchDisplay.textContent = formatStopwatchTime(stopwatchElapsedTime);
+             }
+             document.getElementById('startStopwatchBtn').addEventListener('click', () => { /* ... as before ... */
+                 if (!stopwatchRunning) { stopwatchStartTime = Date.now(); stopwatchInterval = setInterval(updateStopwatch, 10); stopwatchRunning = true; }
+             });
+             document.getElementById('stopStopwatchBtn').addEventListener('click', () => { /* ... as before ... */
+                  if (stopwatchRunning) { clearInterval(stopwatchInterval); const currentTime = Date.now(); stopwatchElapsedTime += currentTime - stopwatchStartTime; stopwatchDisplay.textContent = formatStopwatchTime(stopwatchElapsedTime); stopwatchRunning = false; }
+             });
+             document.getElementById('resetStopwatchBtn').addEventListener('click', () => { /* ... as before ... */
+                 clearInterval(stopwatchInterval); stopwatchRunning = false; stopwatchElapsedTime = 0; stopwatchDisplay.textContent = formatStopwatchTime(0); stopwatchLapsDiv.innerHTML = 'Laps:'; lapCounter = 1;
+             });
+             document.getElementById('lapStopwatchBtn').addEventListener('click', () => { /* ... as before ... */
+                 if (stopwatchRunning) { const lapTime = formatStopwatchTime(stopwatchElapsedTime); const lapElement = document.createElement('div'); lapElement.textContent = `Lap ${lapCounter}: ${lapTime}`; stopwatchLapsDiv.appendChild(lapElement); lapCounter++; stopwatchLapsDiv.scrollTop = stopwatchLapsDiv.scrollHeight; }
+             });
+             window.init_stopwatch = () => { /* ... as before ... */
+                 stopwatchDisplay.textContent = formatStopwatchTime(0); stopwatchLapsDiv.innerHTML = 'Laps:'; lapCounter = 1;
+             }
+
+             // Notes (Already real-time saving)
+             const notesArea = document.getElementById('notesArea');
+             window.init_notes = () => { notesArea.value = localStorage.getItem('simpleNotes') || ''; }
+             notesArea.addEventListener('input', () => { localStorage.setItem('simpleNotes', notesArea.value); });
+
+
+            // BMI Calculator (MODIFIED for real-time updates)
+            const bmiWeightInput = document.getElementById('bmiWeight');
+            const bmiHeightInput = document.getElementById('bmiHeight');
+            const bmiOutputDiv = document.getElementById('bmiOutput');
+
+            function updateBmiCalculation() { // Renamed from button click handler
+                 const weight = parseFloat(bmiWeightInput.value);
+                 const heightCm = parseFloat(bmiHeightInput.value);
+
+                 // Only calculate if both inputs are valid positive numbers
+                 if (!isNaN(weight) && !isNaN(heightCm) && weight > 0 && heightCm > 0) {
+                     const heightM = heightCm / 100;
+                     const bmi = weight / (heightM * heightM);
+                     let category = '';
+                     if (bmi < 18.5) category = 'Underweight';
+                     else if (bmi < 24.9) category = 'Normal weight';
+                     else if (bmi < 29.9) category = 'Overweight';
+                     else category = 'Obesity';
+                     bmiOutputDiv.textContent = `Your BMI: ${bmi.toFixed(2)} (${category})`;
+                 } else {
+                     // Provide feedback if inputs are missing or invalid
+                     if ((isNaN(weight) || weight <= 0) && (isNaN(heightCm) || heightCm <= 0)) {
+                         bmiOutputDiv.textContent = "Enter weight and height.";
+                     } else if (isNaN(weight) || weight <= 0) {
+                         bmiOutputDiv.textContent = "Enter valid weight.";
+                     } else if (isNaN(heightCm) || heightCm <= 0) {
+                          bmiOutputDiv.textContent = "Enter valid height.";
+                     } else {
+                         bmiOutputDiv.textContent = "Enter weight and height."; // Fallback
+                     }
+                 }
+             }
+
+             // Add event listeners to trigger updates
+             bmiWeightInput.addEventListener('input', updateBmiCalculation);
+             bmiHeightInput.addEventListener('input', updateBmiCalculation);
+
+             // Initial state message
+              window.init_bmiCalculator = () => {
+                  bmiOutputDiv.textContent = "Enter weight and height.";
+              }
+
+
+             // Coin Flip (Button-based)
+            document.getElementById('flipCoinBtn').addEventListener('click', () => { /* ... as before ... */
+                 const result = Math.random() < 0.5 ? 'Heads' : 'Tails';
+                 const outputDiv = document.getElementById('coinFlipOutput');
+                 outputDiv.textContent = 'Flipping...';
+                 setTimeout(() => { outputDiv.textContent = `Result: ${result}`; }, 300);
+            });
+
+            // Random Number Generator (Button-based)
+            document.getElementById('generateRandomBtn').addEventListener('click', () => { /* ... as before ... */
+                 const min = parseInt(document.getElementById('rngMin').value);
+                 const max = parseInt(document.getElementById('rngMax').value);
+                 const outputDiv = document.getElementById('randomNumberOutput');
+                 if (isNaN(min) || isNaN(max)) { outputDiv.textContent = "Invalid Min/Max"; return; }
+                 if (min > max) { outputDiv.textContent = "Min cannot be greater than Max"; return; }
+                 const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+                 outputDiv.textContent = `Result: ${randomNumber}`;
+            });
+
+
+            // Currency Converter (Button-based due to API)
+            const currencyAmountInput = document.getElementById('currencyAmount');
+            const currencyFromSelect = document.getElementById('currencyFrom');
+            const currencyToSelect = document.getElementById('currencyTo');
+            const convertCurrencyBtn = document.getElementById('convertCurrencyBtn');
+            const currencyOutput = document.getElementById('currencyOutput');
+            const CURRENCY_API_KEY = '6fa58bc4cabe3e346573d3d8'; // YOUR KEY HERE
+            const CURRENCY_API_URL_BASE = `https://v6.exchangerate-api.com/v6/${CURRENCY_API_KEY}`;
+
+             async function fetchCurrencies() { /* ... as before ... */
+                 if (!CURRENCY_API_KEY || CURRENCY_API_KEY === 'YOUR_API_KEY') {
+                     console.warn("Currency Converter: API Key not set.");
+                     currencyOutput.textContent = "API Key needed for real-time rates.";
+                     convertCurrencyBtn.disabled = true;
+                     return;
+                 }
+                 try {
+                     const response = await fetch(`${CURRENCY_API_URL_BASE}/latest/USD`); // Fetch based on USD initially
+                     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                     const data = await response.json();
+                      if (data.result === 'success' && data.conversion_rates) {
+                         const rates = data.conversion_rates;
+                         currencyFromSelect.innerHTML = ''; currencyToSelect.innerHTML = '';
+                         for (const currencyCode in rates) {
+                             const optionFrom = document.createElement('option'); optionFrom.value = currencyCode; optionFrom.textContent = currencyCode; currencyFromSelect.appendChild(optionFrom);
+                             const optionTo = document.createElement('option'); optionTo.value = currencyCode; optionTo.textContent = currencyCode; currencyToSelect.appendChild(optionTo);
+                         }
+                         currencyFromSelect.value = 'USD'; currencyToSelect.value = 'EUR';
+                         convertCurrencyBtn.disabled = false;
+                         currencyOutput.textContent = "Ready. Enter values and click Convert.";
+                     } else { throw new Error('API response error: ' + (data['error-type'] || 'Unknown error')); }
+                 } catch (error) { /* ... error handling as before ... */
+                     console.error("Error fetching currency data:", error);
+                     currencyOutput.textContent = `Error loading currencies: ${error.message}. Using defaults.`;
+                     convertCurrencyBtn.disabled = true;
+                 }
+             }
+
+             async function convertCurrency() { /* ... as before ... */
+                  if (!CURRENCY_API_KEY || CURRENCY_API_KEY === 'YOUR_API_KEY') { currencyOutput.textContent = "API Key needed."; return; }
+                  const amount = parseFloat(currencyAmountInput.value);
+                  const fromCurrency = currencyFromSelect.value;
+                  const toCurrency = currencyToSelect.value;
+                  if (isNaN(amount) || amount <= 0) { currencyOutput.textContent = "Please enter a valid positive amount."; return; }
+
+                  currencyOutput.textContent = "Converting..."; // Indicate activity
+                  try {
+                      const conversionUrl = `${CURRENCY_API_URL_BASE}/pair/${fromCurrency}/${toCurrency}/${amount}`; // Use pair conversion endpoint
+                      const response = await fetch(conversionUrl);
+                      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                      const data = await response.json();
+
+                      if (data.result === 'success' && data.conversion_result) {
+                           const result = data.conversion_result.toFixed(2);
+                           currencyOutput.textContent = `${amount} ${fromCurrency} = ${result} ${toCurrency}`;
+                      } else { throw new Error('API conversion error: ' + (data['error-type'] || 'Unknown error')); }
+                  } catch (error) { /* ... error handling as before ... */
+                      console.error("Error during currency conversion:", error);
+                      currencyOutput.textContent = `Conversion error: ${error.message}.`;
+                  }
+              }
+
+             window.init_currencyConverter = fetchCurrencies;
+             convertCurrencyBtn.addEventListener('click', convertCurrency);
+
+
+             // Word Counter (Already real-time)
+             const wordCounterTextArea = document.getElementById('wordCounterText');
+             const wordCounterOutput = document.getElementById('wordCounterOutput');
+             wordCounterTextArea.addEventListener('input', () => { /* ... as before ... */
+                 const text = wordCounterTextArea.value.trim();
+                 const characters = text.length;
+                 const words = text === '' ? 0 : text.split(/\s+/).filter(word => word.length > 0).length;
+                 wordCounterOutput.textContent = `Words: ${words}, Characters: ${characters}`;
+             });
+              window.init_wordCounter = () => { wordCounterTextArea.dispatchEvent(new Event('input')); }
+
+        }); // End DOMContentLoaded
+    </script>
+
+</body>
+</html>
